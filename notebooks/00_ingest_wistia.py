@@ -66,8 +66,6 @@ Endpoints (api.wistia.com/v1):
   stats/visitors/{visitor_key}.json         one visitor             daily, for new visitor keys
 """
 
-from __future__ import annotations
-
 import json
 import logging
 import time
