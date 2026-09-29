@@ -1,0 +1,14 @@
+# secrets and local exploration output (contains visitor IPs and emails)
+exploration/
+.env
+*.token
+
+# local data synced from the lake
+dashboards/data/
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.venv/

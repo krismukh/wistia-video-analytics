@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+builtins = ["mssparkutils", "spark", "display"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Synapse notebooks are cell-structured: imports per cell, embedded client module mid-file.
+"notebooks/*" = ["E402", "F811", "F404"]

@@ -1,0 +1,24 @@
+{
+  "name": "trg_daily_0300",
+  "properties": {
+    "description": "Daily production run at 03:00 Eastern; passes the trigger's scheduled date as run_date.",
+    "annotations": [],
+    "runtimeState": "Started",
+    "pipelines": [
+      {
+        "pipelineReference": { "referenceName": "pl_wistia_daily", "type": "PipelineReference" },
+        "parameters": { "run_date": "@formatDateTime(trigger().scheduledTime, 'yyyy-MM-dd')" }
+      }
+    ],
+    "type": "ScheduleTrigger",
+    "typeProperties": {
+      "recurrence": {
+        "frequency": "Day",
+        "interval": 1,
+        "startTime": "2026-09-29T21:56:03",
+        "timeZone": "Eastern Standard Time",
+        "schedule": { "minutes": [ 0 ], "hours": [ 3 ] }
+      }
+    }
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "name": "pl_wistia_daily",
+  "properties": {
+    "description": "Daily Wistia ingestion (Python) then silver and gold transformations (PySpark) on syn-wistia-kcm.",
+    "activities": [
+      {
+        "name": "nb_ingest",
+        "description": "00_ingest_wistia: pull six Wistia endpoints into bronze for run_date",
+        "type": "SynapseNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 600,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "notebook": {
+            "referenceName": "00_ingest_wistia",
+            "type": "NotebookReference"
+          },
+          "parameters": {
+            "run_date": {
+              "value": {
+                "value": "@pipeline().parameters.run_date",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          },
+          "sparkPool": {
+            "referenceName": "sparkpool1",
+            "type": "BigDataPoolReference"
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "ls_synapse_wistia",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "nb_silver",
+        "description": "01_silver: type, deduplicate, and merge the bronze partition into silver",
+        "type": "SynapseNotebook",
+        "dependsOn": [
+          {
+            "activity": "nb_ingest",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 600,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "notebook": {
+            "referenceName": "01_silver",
+            "type": "NotebookReference"
+          },
+          "parameters": {
+            "run_date": {
+              "value": {
+                "value": "@pipeline().parameters.run_date",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          },
+          "sparkPool": {
+            "referenceName": "sparkpool1",
+            "type": "BigDataPoolReference"
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "ls_synapse_wistia",
+          "type": "LinkedServiceReference"
+        }
+      },
+      {
+        "name": "nb_gold",
+        "description": "02_gold: rebuild the dimensional model from silver and reconcile",
+        "type": "SynapseNotebook",
+        "dependsOn": [
+          {
+            "activity": "nb_silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 600,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [],
+        "typeProperties": {
+          "notebook": {
+            "referenceName": "02_gold",
+            "type": "NotebookReference"
+          },
+          "parameters": {
+            "run_date": {
+              "value": {
+                "value": "@pipeline().parameters.run_date",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          },
+          "sparkPool": {
+            "referenceName": "sparkpool1",
+            "type": "BigDataPoolReference"
+          }
+        },
+        "linkedServiceName": {
+          "referenceName": "ls_synapse_wistia",
+          "type": "LinkedServiceReference"
+        }
+      }
+    ],
+    "parameters": {
+      "run_date": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    },
+    "annotations": [
+      "wistia-video-analytics"
+    ]
+  }
+}

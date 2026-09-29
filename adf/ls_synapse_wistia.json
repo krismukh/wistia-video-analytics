@@ -1,0 +1,11 @@
+{
+  "name": "ls_synapse_wistia",
+  "properties": {
+    "annotations": [],
+    "type": "AzureSynapseArtifacts",
+    "typeProperties": {
+      "endpoint": "https://syn-wistia-kcm.dev.azuresynapse.net",
+      "authentication": "MSI"
+    }
+  }
+}

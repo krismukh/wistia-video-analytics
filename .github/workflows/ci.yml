@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint (ruff)
+        run: ruff check src tests notebooks
+
+      - name: Unit tests (pagination, retries, watermarks, channel rule)
+        run: pytest -q
+
+      - name: Notebook syntax check
+        run: python -m py_compile notebooks/*.py
+
+      - name: Notebook and module in sync
+        run: pytest -q tests/test_client.py -k notebook_embeds_identical_client
+
+      - name: ADF definitions are valid JSON
+        run: python -c "import json,glob; [json.load(open(f)) for f in glob.glob('adf/*.json')]; print('adf json ok')"
+
+      - name: No secrets committed
+        run: python scripts/check_no_secrets.py
