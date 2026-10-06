@@ -40,8 +40,9 @@ build_*.py        generate both notebook forms from one source; run after editin
 tests/            test_client.py (unit tests, mocked HTTP); local_silver_smoke.py (manual, needs a JVM)
 sql/              create_gold_views.sql   serverless SQL database and views
 adf/              linked service, pipeline, and trigger definitions
-dashboards/       Streamlit app and gold sync script
-docs/             proposal, diagram, API exploration report, data quality inventory, production run log
+dashboards/       app.py (Streamlit, five pages) and sync_gold.py (copies gold Parquet to dashboards/data/, git-ignored)
+docs/             proposal (.docx), diagram (.drawio), api_exploration.md, data_quality_inventory.md, decision_log.md,
+                  production_run_log.md, final report (.docx), evidence/ screenshots
 scripts/          check_no_secrets.py
 .github/workflows/ci.yml
 ```
@@ -82,6 +83,20 @@ logs under `*/control/` are the evidence for the seven-day production run (FR8).
 5. Run `sql/create_gold_views.sql` against the built-in serverless pool.
 6. In ADF Studio, create `ls_synapse_wistia` (managed identity) and the pipeline and trigger from `adf/`; debug, publish, start the trigger.
 
+## Production evidence (FR8)
+
+`docs/production_run_log.md` records seven consecutive scheduled runs, September 30 to October 6, 2026, all Succeeded, 8m 45s to 9m 49s each; `docs/evidence/adf_pipeline_runs_7_days.png` is the ADF Monitor view.
+
+## Dashboards
+
+```
+pip install streamlit plotly pandas pyarrow azure-identity azure-storage-file-datalake
+python dashboards/sync_gold.py      # browser sign-in; copies the gold tables locally
+streamlit run dashboards/app.py
+```
+
+Five pages: Overview (loads, plays, play rate, hours watched, 7-day trends), Media comparison, Audience (country, platform, and watch-depth grain only; no personal data), Engagement curve, and Data quality (daily versus cumulative reconciliation). Screenshots are in `docs/evidence/`.
+
 ## Development
 
 ```
@@ -96,11 +111,11 @@ if the client embedded in the ingestion notebook drifts from `src/wistia_client/
 
 ## Data quality findings
 
-Recorded in `docs/data_quality_inventory.md`:
+Recorded in full in `docs/data_quality_inventory.md`; the main items:
 
 - Neither media name contains "YouTube" or "Facebook"; `channel` is "Unknown" for both.
 - Two event records in the backfill shared an `event_key` with another and were deduplicated (1,224 to 1,222).
-- For `The Gap Method`, the daily series sums to 913 loads and 320 plays against cumulative counters of 932 and 328 (about 2 percent short); `rivas_-_de_testimonial` reconciles exactly (935 plays).
+- For `The Gap Method`, the daily series sums to 915 loads and 320 plays against cumulative counters of 934 and 328 (about 2 percent short); `rivas_-_de_testimonial` reconciles exactly on plays (943).
 - Events older than two years are not retained by Wistia; daily load and play counts are.
 - `percent_viewed`, `play_rate`, and `engagement` are fractions (0 to 1); gold multiplies to percentages where displayed.
 

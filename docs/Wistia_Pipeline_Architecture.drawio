@@ -1,0 +1,149 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram name="Azure Medallion Pipeline" id="wistia-video-analytics-01">
+    <mxGraphModel dx="900" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="700" pageHeight="1480" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title_block" value="Proposed Architecture (Target Design) &#8212; pending SME approval" style="text;html=1;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#1F3A4B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="4" width="460" height="26" as="geometry"/>
+        </mxCell>
+        <mxCell id="orchestration_note" value="Orchestration: daily ADF trigger (03:00 ET) with retry &#183; Secrets: Key Vault &#183; CI/CD: GitHub Actions" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fontColor=#5F5F5F;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1446" width="440" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="src_wistia" value="Wistia Stats API&#10;api.wistia.com/v1 (Bearer token)" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#E1F0FF;strokeColor=#2E5395;fontColor=#1F3864;fontSize=12;fontStyle=1;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;" vertex="1" parent="1">
+          <mxGeometry x="230" y="36" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="media_note" value="Two media: 8hunphufxp, 9k4tbcdfg0&#10;Six endpoints, paged, incremental" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=2;fontColor=#5F5F5F;" vertex="1" parent="1">
+          <mxGeometry x="360" y="54" width="220" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="keyvault" value="Azure Key Vault&#10;wistia-api-token" style="sketch=0;html=1;aspect=fixed;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=12;fontColor=#333333;image;image=img/lib/azure2/security/Key_Vaults.svg;" vertex="1" parent="1">
+          <mxGeometry x="60" y="176" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="ingest" value="&lt;b&gt;Synapse notebook 00_ingest_wistia&lt;/b&gt;&lt;div style=&quot;font-size:11px;margin-top:2px;&quot;&gt;Python (requests): pagination, watermarks,&lt;br&gt;retries with backoff, run log&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#2E5395;strokeColor=#1F3864;fontColor=#FFFFFF;fontSize=13;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="170" y="170" width="220" height="76" as="geometry"/>
+        </mxCell>
+        <mxCell id="adf" value="Azure Data Factory&#10;pl_wistia_daily" style="sketch=0;html=1;aspect=fixed;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=12;fontColor=#333333;image;image=img/lib/azure2/databases/Data_Factory.svg;" vertex="1" parent="1">
+          <mxGeometry x="436" y="176" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="adls" value="ADLS Gen2 (stwistiakcm, run-date partitioned)" style="sketch=0;html=1;aspect=fixed;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=12;fontColor=#333333;image;image=img/lib/azure2/storage/Data_Lake_Storage_Gen1.svg;" vertex="1" parent="1">
+          <mxGeometry x="248" y="316" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="synapse" value="Azure Synapse&#10;Spark pool" style="sketch=0;html=1;aspect=fixed;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;fontSize=12;fontColor=#333333;image;image=img/lib/azure2/analytics/Azure_Synapse_Analytics.svg;" vertex="1" parent="1">
+          <mxGeometry x="560" y="760" width="64" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="pyspark" value="PySpark&#10;01_silver, 02_gold" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#2E5395;strokeColor=#1F3864;fontColor=#FFFFFF;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="546" y="920" width="92" height="52" as="geometry"/>
+        </mxCell>
+        <mxCell id="bronze" value="&lt;b&gt;Bronze&lt;/b&gt;  &lt;span style=&quot;font-size:11px;color:#7A2E1E;&quot;&gt;raw ingestion (JSON as returned, one file per page)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="480" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="silver" value="&lt;b&gt;Silver&lt;/b&gt;  &lt;span style=&quot;font-size:11px;color:#333333;&quot;&gt;typed &amp;amp; deduplicated on natural keys (Parquet)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fillColor=#F2F2F2;strokeColor=#888888;fontColor=#333333;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="740" width="480" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="gold" value="&lt;b&gt;Gold&lt;/b&gt;  &lt;span style=&quot;font-size:11px;color:#7A5A00;&quot;&gt;dimensional model (Parquet)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;verticalAlign=top;align=left;spacingLeft=12;spacingTop=8;fillColor=#FFF7DD;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="480" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="b1" value="&lt;b&gt;Media metadata&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;medias/{id}.json&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="484" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="b2" value="&lt;b&gt;Media stats (cumulative)&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;stats/medias/{id}.json&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="484" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="&lt;b&gt;Media stats by date&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;stats/medias/{id}/by_date.json&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="556" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="b4" value="&lt;b&gt;Media engagement curve&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;stats/medias/{id}/engagement.json&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="556" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="b5" value="&lt;b&gt;Visitors&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;stats/visitors.json (paged)&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="628" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="b6" value="&lt;b&gt;Events (viewing sessions)&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;stats/events.json (paged, incremental)&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FBEAE4;strokeColor=#B85450;fontColor=#7A2E1E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="628" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1" value="&lt;b&gt;media&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;one row per media per ingest date&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="784" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="&lt;b&gt;media_stats_snapshot&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;cumulative totals per ingest date&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="784" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="&lt;b&gt;media_stats_daily&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;deduplicated on media_id + date&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="856" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="&lt;b&gt;media_engagement&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;engagement and rewatch arrays exploded&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="856" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="&lt;b&gt;visitors&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;one row per visitor_key, latest activity&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="928" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="s6" value="&lt;b&gt;events&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;one row per event_key, typed, geo, percent_viewed&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFFFF;strokeColor=#9A9A9A;fontColor=#222222;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="928" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="g1" value="&lt;b&gt;dim_media&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;title, url, channel, created_at, duration&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFCF0;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1084" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="g2" value="&lt;b&gt;dim_visitor&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;ip_address, country, first/last activity&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFCF0;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="1084" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="g3" value="&lt;b&gt;dim_date&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;generated calendar&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFCF0;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1156" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="g4" value="&lt;b&gt;fact_media_engagement&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;media &#215; visitor &#215; date: plays, watch time, watched %&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFCF0;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="290" y="1156" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="g5" value="&lt;b&gt;fact_media_daily&lt;/b&gt;&lt;div style=&quot;font-size:11px;color:#5f5f5f;margin-top:2px;&quot;&gt;media &#215; date: loads, plays, play rate, hours watched&lt;/div&gt;" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=12;whiteSpace=wrap;html=1;verticalAlign=middle;fillColor=#FFFCF0;strokeColor=#D6B656;fontColor=#7A5A00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="175" y="1228" width="190" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="sqlviews" value="Synapse serverless SQL&#10;external views (DWH)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#DEEBF7;strokeColor=#2E5395;fontColor=#1F3864;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1360" width="190" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="streamlit" value="Streamlit &#8212; four dashboards" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#E2EFDA;strokeColor=#375623;fontColor=#375623;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1360" width="190" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;" edge="1" parent="1" source="src_wistia" target="ingest">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="token" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=classic;strokeColor=#9673A6;fontSize=10;fontColor=#5F5F5F;" edge="1" parent="1" source="keyvault" target="ingest">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="triggers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=classic;strokeColor=#9673A6;fontSize=10;fontColor=#5F5F5F;" edge="1" parent="1" source="adf" target="ingest">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;" edge="1" parent="1" source="ingest" target="adls">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;" edge="1" parent="1" source="adls" target="bronze">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;" edge="1" parent="1" source="bronze" target="silver">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;" edge="1" parent="1" source="silver" target="gold">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="gold" target="sqlviews">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;endArrow=classic;strokeColor=#777777;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="gold" target="streamlit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d0" value="triggers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=classic;strokeColor=#9673A6;fontSize=10;fontColor=#5F5F5F;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="adf" target="synapse">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="592" y="208"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=none;startArrow=none;strokeColor=#9673A6;" edge="1" parent="1" source="synapse" target="pyspark">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=none;startArrow=none;strokeColor=#9673A6;" edge="1" parent="1" source="pyspark" target="silver">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;dashed=1;endArrow=none;startArrow=none;strokeColor=#9673A6;" edge="1" parent="1" source="pyspark" target="gold">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
